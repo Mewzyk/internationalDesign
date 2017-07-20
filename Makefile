@@ -1,4 +1,4 @@
-hellomake: main.cpp
-	g++ -o hellomake main.cpp
+game: board.cpp
+	g++ -o game board.cpp
 clean:
-	rm hellomake
+	rm game
