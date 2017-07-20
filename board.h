@@ -1,7 +1,3 @@
-#include <iostream>
-
-using namespace std;
-
 /**
  * @class: board
  * 
@@ -9,31 +5,48 @@ using namespace std;
  * @tile: holds the gameboard
  * 
  */
+#ifndef BOARD_H
+#define BOARD_H
 
-class board {
+#include <iostream>
+#include <stdexcept>
+#include <unistd.h>
+
+using namespace std;
+
+//#define BOARD_TEST
+
+enum {
+	player1,
+	player2
+};
+
+struct TileInfo{
+	int moveDirs; 
+	char token;
+};
+typedef TileInfo * Tile;
+
+struct GameInfo{
+	int turn; 
+	char p1Token; 
+	char p2Token; 
+	Tile board[8][8];
+};
+
+
+typedef GameInfo * Game;
+
+//---Creation-Functions---//
+Game newGame(void);
 	
-	private:
-		tile board[8][8];
 
-	public:
-		board() = default; // Default constructor
-			   // Possibly in future have user send in an ID when they create a board or something
-		//Functions of class board
-		//with a reference to a board object call by board::methodName()	
-		void initBoard();
-		void printBoard();
-		
-				 
-};
+//---Access-Functions---//
+void printBoard(Game myGame);
 
-/**
- * Holds information for one node of the board
- *
- * @pair: coordinates in the grid 
- * @datum: token that will appear on the board
- */
-struct tile {
-	pair <int><int> locaton;
-	char datum; 
-};
 
+//---Manipulation-Functions---//
+int makeMove(int player, Game myGame, int i, int j);
+
+
+#endif // BOARD_H

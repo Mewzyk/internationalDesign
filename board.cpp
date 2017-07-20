@@ -6,33 +6,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <unistd.h>
+#include "board.h"
 
 using namespace std;
 
+//#define BOARD_TEST
 
-#define BOARD_TEST
-
-enum {
-	player1,
-	player2
-};
-
-struct TileInfo{
-	int moveDirs; 
-	char token;
-};
-
-typedef TileInfo * Tile;
-
-struct GameInfo{
-	int turn; 
-	char p1Token; 
-	char p2Token; 
-	Tile board[8][8];
-};
-
-typedef GameInfo * Game;
-
+//---Creation-Functions---//
 Game newGame(void){
 	Game myGame = new GameInfo();
 	
@@ -51,6 +31,7 @@ Game newGame(void){
 	for (int i = 0; i < 8; i++){
 		for (int j = 0; j < 8; j++){
 			myGame->board[i][j] = new TileInfo;
+			myGame->board[i][j]->token = '-';
 		}
 	}
 
@@ -64,9 +45,11 @@ Game newGame(void){
 	return myGame;
 }
 
+//---Access-Functions---//
 void printBoard(Game myGame){
 	char A = 'A';
-	
+
+	//print ABC index	
 	cout << endl << "  ";
 	for(int i = 0; i < 8 ; i++){
 		cout << A << " ";
@@ -84,15 +67,38 @@ void printBoard(Game myGame){
 	return; 
 }
 
+int getTurn(Game myGame){
+	return myGame->turn;
+}
+
+//---Manipulation-Functions---//
+int makeMove(int player, Game myGame, int i, int j){
+	if( (0 > i > 8) || (0 > j > 8)){
+		cout << "cannot make move: indexing" << endl;
+		return -1;
+	}
+
+	switch (player){
+		case player1:
+			myGame->board[i][j]->token = myGame->p1Token;
+			break;
+		case player2:
+			myGame->board[i][j]->token = myGame->p2Token;
+			break;
+		default:
+			cout << "cannot make move: invalid player" << endl;
+			return -1;
+			break;
+	}		
+	return 0; //SUCCESS
+}
+
+//---File-Test-Harness---//
 #ifdef BOARD_TEST
 int main (int argc, char** argv) {
 	cout << "---Board-Test---" << endl;
-	Game myGame = newGame();
-/*	char test;
-	cout << "Player 1, please choose a game piece:";
-	cin.get(test);
-	cout << "this was chosen" << endl << test << endl;	
-*/
+/*	Game myGame = newGame();
+
 	cout << "player 1 chose: " << myGame->p1Token << endl;
 	cout << "player 2 chose: " << myGame->p2Token << endl;
 	
@@ -100,6 +106,14 @@ int main (int argc, char** argv) {
 	
 	printBoard(myGame);
 
+	for (int i = 0; i < 8; i++){
+		for (int j = 0; j < 8 ; j++){
+			makeMove(player1,myGame,i,j);
+		}
+	}
+	printBoard(myGame);
+*/
 	return 0;
 }
+
 #endif //BOARD_TEST
