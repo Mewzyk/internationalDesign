@@ -6,39 +6,24 @@
 
 using namespace std;
 
-
 #ifndef BOARD_TEST
 int main (int argc, char** argv) {
 	cout << "---Welcome to Othello---" << endl << endl;
 	Game myGame = newGame();
-	char row, col;
 
-	while(1){
-
-		//TODO: Allow players to enter their own names
-		//Player1's turn 
+	while(1){	
+		//print current info
 		printBoard(myGame);
-		cout << "Player 1's turn" << endl;
-		cout << "Column:";
-		cin.get(col);
-		cin.get();
-		cout << "Row:";
-		cin.get(row);
-		cin.get();
-		makeMove(player1,myGame,row-'0',col-'A');
+		cout << "Player"<< getTurn(myGame) + 1 <<"'s turn" << endl;
 
-		//Player2's turn 
-		printBoard(myGame);
-		cout << "Player 2's turn" << endl;
-		cout << "Column:";
-		cin.get(col);
-		cin.get();
-		cout << "Row:";
-		cin.get(row);
-		cin.get();
-		makeMove(player2,myGame,row-'0',col-'A');
+		//get desired move
+		std::pair<int,int> newMove = getMove(myGame);
 
+		//check if valid
 
+		//make move
+		makeMove(myGame, newMove.first, newMove.second);
+		changeTurn(myGame);
 	}
 
 	return 0;
