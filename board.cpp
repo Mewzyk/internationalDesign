@@ -25,14 +25,14 @@ struct GameInfo{
 };
 
 // matrix move directions - we can make this less global if the program is too beefy
-const std::pair<int,int> N (-1,0);
-const std::pair<int,int> NE (-1,1);
-const std::pair<int,int> E (0,1);
-const std::pair<int,int> SE (1,1);
-const std::pair<int,int> S (1,0);
-const std::pair<int,int> SW (1,-1);
-const std::pair<int,int> W (0,-1);
-const std::pair<int,int> NW (-1,-1);
+const pair<int,int> N (-1,0);
+const pair<int,int> NE (-1,1);
+const pair<int,int> E (0,1);
+const pair<int,int> SE (1,1);
+const pair<int,int> S (1,0);
+const pair<int,int> SW (1,-1);
+const pair<int,int> W (0,-1);
+const pair<int,int> NW (-1,-1);
 	
 #define NORTH 1
 #define NORTHEAST 1 << 1
@@ -49,15 +49,15 @@ const std::pair<int,int> NW (-1,-1);
 //template <typename T, typename U>
 //TODO fix warning for return type
 //addition for pair
-//std::pair<T,U> operator+(const pair<T,U> & l, const pair<T,U> & r){
+//pair<T,U> operator+(const pair<T,U> & l, const pair<T,U> & r){
 //	pair<T,U> output(l.first+r.first, l.second+r.second);
 //	return output;
 //}
 
 //pulled from same stackoverflow as ^
 //simple operator+ implementation for integers
-std::pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
-	return std::make_pair(x.first + y.first, x.second + y.second);
+pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
+	return make_pair(x.first + y.first, x.second + y.second);
 }
 
 
@@ -164,15 +164,15 @@ int changeTurn(Game myGame){
 	return 0;
 }
 
-std::pair<int,int> testAddition(pair<int, int> left, pair<int, int> right){
+pair<int,int> testAddition(pair<int, int> left, pair<int, int> right){
 	return left + right;
 }
 
 //requests move from player and checks its validity
-std::pair<int,int> getMove(Game myGame){
+pair<int,int> getMove(Game myGame){
 
-	std::pair<char,char> charIndicies; //row,col
-	std::pair<int,int> intIndicies; //row, col
+	pair<char,char> charIndicies; //row,col
+	pair<int,int> intIndicies; //row, col
 	bool Valid = false;
 
 	//loop until valid move is made
@@ -202,8 +202,8 @@ std::pair<int,int> getMove(Game myGame){
 	return intIndicies;
 }		
 
-bool validateMove(Game myGame, const std::pair<int,int> move){
-	std::pair<int,int> checkSpace = move;
+bool validateMove(Game myGame, const pair<int,int> move){
+	pair<int,int> checkSpace = move;
 	
 	//check if empty
 	if (myGame->board[move.first][move.second]->token != '-'){
