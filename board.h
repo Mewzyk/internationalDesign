@@ -31,6 +31,7 @@ void printBoard(Game myGame);
 
 int getTurn(Game myGame);
 
+char getOpponentToken(Game myGame);
 
 //---Manipulation-Functions---//
 int makeMove(Game myGame, int i, int j);
@@ -38,5 +39,7 @@ int makeMove(Game myGame, int i, int j);
 int changeTurn(Game myGame);
 
 std::pair<int,int> getMove(Game myGame);
+
+bool validateMove(Game myGame, const std::pair<int,int> move);
 
 #endif // BOARD_H
