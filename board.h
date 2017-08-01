@@ -42,4 +42,7 @@ std::pair<int,int> getMove(Game myGame);
 
 bool validateMove(Game myGame, const std::pair<int,int> move);
 
+//--Temp pair test operator+ function--//
+std::pair<int,int> testAddition(pair<int,int> left, pair<int,int> right); 
+
 #endif // BOARD_H

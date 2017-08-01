@@ -46,12 +46,20 @@ const std::pair<int,int> NW (-1,-1);
 
 
 //---Struct-Ops---//
-template <typename T, typename U>
+//template <typename T, typename U>
 //TODO fix warning for return type
 //addition for pair
-std::pair<T,U> operator+(const std::pair<T,U> & l, const std::pair<T,U> & r){
-	return {l.first+r.first,l.second+r.second};
+//std::pair<T,U> operator+(const pair<T,U> & l, const pair<T,U> & r){
+//	pair<T,U> output(l.first+r.first, l.second+r.second);
+//	return output;
+//}
+
+//pulled from same stackoverflow as ^
+//simple operator+ implementation for integers
+std::pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
+	return std::make_pair(x.first + y.first, x.second + y.second);
 }
+
 
 //---Creation-Functions---//
 Game newGame(void){
@@ -154,6 +162,10 @@ int changeTurn(Game myGame){
 		myGame->turn = player1;
 	}
 	return 0;
+}
+
+std::pair<int,int> testAddition(pair<int, int> left, pair<int, int> right){
+	return left + right;
 }
 
 //requests move from player and checks its validity

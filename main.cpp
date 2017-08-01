@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <stdexcept>
 #include <unistd.h>
@@ -11,7 +10,7 @@ int main (int argc, char** argv) {
 	cout << "---Welcome to Othello---" << endl << endl;
 	Game myGame = newGame();
 	bool valid = false;
-
+	
 	while(1){	
 		//print current info
 		printBoard(myGame);
@@ -37,4 +36,3 @@ int main (int argc, char** argv) {
 	return 0;
 }
 #endif //MAIN
-
