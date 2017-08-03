@@ -1,5 +1,7 @@
 /* board.cpp 
- * Last edit 7/31 bbaltaxe
+ * edit 7/31 bbaltaxe
+ * 	8/02 sgthomas
+ *      8/03 sgthomas
  */
 
 #include <iostream>
@@ -36,22 +38,20 @@ pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
 	return make_pair(x.first + y.first, x.second + y.second);
 }
 
-
 //---Creation-Functions---//
 Game::Game(){
-	this->turn = player1;
+	turn = player1;
 	//TODO have player enter name and refer to them by it 	
 	//TODO make sure piece is not whitespace like /n or something
 	//TODO maybe have the player enter the actual ascii code for desired piece (so they can have something not on the keyboard)
 	//get desired tokens from user
 	cout << "Player 1, please choose a game token:";
-	cin.get(this->p1Token);
+	cin.get(p1Token);
 	cin.get();
 	cout << "Player 2, please choose a game token:";
-	cin.get(this->p2Token);
+	cin.get(p2Token);
 	cin.get();
 	
-
 	//initialize board
 	for (int i = 0; i < 8; i++){
 		for (int j = 0; j < 8; j++){
@@ -61,10 +61,10 @@ Game::Game(){
 	}
 
 	//set center pieces in place
-	this->board[3][4]->token = this->p1Token;
-	this->board[4][3]->token = this->p1Token;
-	this->board[3][3]->token = this->p2Token;	
-	this->board[4][4]->token = this->p2Token;
+	board[3][4]->token = p1Token;
+	board[4][3]->token = p1Token;
+	board[3][3]->token = p2Token;	
+	board[4][4]->token = p2Token;
 }
 
 //---Access-Functions---//
@@ -82,7 +82,7 @@ void Game::printBoard(){
 	for(int i = 0; i < 8 ; i++){
 		cout << i << " ";
 		for (int j = 0; j < 8; j++){
-			cout << this->board[i][j]->token << " ";
+			cout << board[i][j]->token << " ";
 		}
 		cout << endl;
 	}
@@ -90,14 +90,14 @@ void Game::printBoard(){
 }
 
 int Game::getTurn(){
-	return this->turn;
+	return turn;
 }
 
 char Game::getOpponentToken(){
-	if (this->turn == player1){
-		return this->p2Token;
+	if (turn == player1){
+		return p2Token;
 	} else{
-		return this->p1Token;
+		return p1Token;
 	}
 }
 
@@ -110,12 +110,12 @@ int Game::makeMove(int i, int j){
 		return -1;
 	}
 
-	switch (this->turn){
+	switch (turn){
 		case player1:
-			this->board[i][j]->token = this->p1Token;
+			board[i][j]->token = p1Token;
 			break;
 		case player2:
-			this->board[i][j]->token = this->p2Token;
+			board[i][j]->token = p2Token;
 			break;
 		default:
 			cout << "cannot make move: invalid player" << endl;
@@ -127,10 +127,10 @@ int Game::makeMove(int i, int j){
 
 //toggles turn
 int Game::changeTurn(){
-	if (this->turn == player1){
-		this->turn = player2;
+	if (turn == player1){
+		turn = player2;
 	}else{
-		this->turn = player1;
+		turn = player1;
 	}
 	return 0;
 }
@@ -174,7 +174,7 @@ bool Game::validateMove(const pair<int,int> move){
 	pair<int,int> checkSpace = move;
 	
 	//check if empty
-	if (this->board[move.first][move.second]->token != '-'){
+	if (board[move.first][move.second]->token != '-'){
 		cout << "This space is not empty." << endl;
 		return false;
 	} 
@@ -182,39 +182,39 @@ bool Game::validateMove(const pair<int,int> move){
 	//check surrounding spaces
 	//TODO segfault happening because we are indexing out of the matrix here. Need to check that checkSpace is in the matrix before using it to index each time can't think of a non ugly way to do it right now 
 	checkSpace = move + N;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= NORTH; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= NORTH; 
 	} 
 	checkSpace = move + NE;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= NORTHEAST; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= NORTHEAST; 
 	} 
 	checkSpace = move + E;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= EAST; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= EAST; 
 	} 
 	checkSpace = move + SE;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= SOUTHEAST; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= SOUTHEAST; 
 	} 
 	checkSpace = move + S;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= SOUTH; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= SOUTH; 
 	} 
 	checkSpace = move + SW;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= SOUTHWEST; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= SOUTHWEST; 
 	} 
 	checkSpace = move + W;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= WEST; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= WEST; 
 	} 
 	checkSpace = move + NW;
-	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
-		this->board[move.first][move.second]->moveDirs |= NORTHWEST; 
+	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		board[move.first][move.second]->moveDirs |= NORTHWEST; 
 	} 
 
-	if(!this->board[move.first][move.second]->moveDirs){
+	if(!board[move.first][move.second]->moveDirs){
 		cout << "Please choose move adjacent to one of your opponent's tokens." << endl;
 		return false;
 	} else {
@@ -240,7 +240,7 @@ int main (int argc, char** argv) {
 	cout << "player 2 chose: " << this->p2Token << endl;
 	
 	cout << "---board maybe follows" << endl;
-	
+
 	printBoard(this);
 
 	for (int i = 0; i < 8; i++){
