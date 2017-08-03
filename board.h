@@ -18,31 +18,29 @@ enum {
 	player2
 };
 
+
+struct TileInfo{
+        int moveDirs;
+        char token;
+};
+
 typedef struct TileInfo * Tile;
 
-typedef struct GameInfo * Game;
+class Game {
+	int turn;
+	char p1Token;
+	char p2Token;
+	Tile board[8][8];
 
-//---Creation-Functions---//
-Game newGame(void);
+	public:
+		Game();
+		void printBoard();
+		int getTurn();
+		char getOpponentToken();
+		int makeMove(int i, int j);
+		int changeTurn();
+		pair<int,int> getMove();
+		bool validateMove(const pair<int,int> move);
+};
 	
-
-//---Access-Functions---//
-void printBoard(Game myGame);
-
-int getTurn(Game myGame);
-
-char getOpponentToken(Game myGame);
-
-//---Manipulation-Functions---//
-int makeMove(Game myGame, int i, int j);
-
-int changeTurn(Game myGame);
-
-std::pair<int,int> getMove(Game myGame);
-
-bool validateMove(Game myGame, const std::pair<int,int> move);
-
-//--Temp pair test operator+ function--//
-std::pair<int,int> testAddition(pair<int,int> left, pair<int,int> right); 
-
 #endif // BOARD_H

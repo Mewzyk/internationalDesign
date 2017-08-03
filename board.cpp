@@ -12,18 +12,6 @@ using namespace std;
 
 //#define BOARD_TEST
 
-struct TileInfo{
-	int moveDirs;
-	char token;
-};
-
-struct GameInfo{
-	int turn; 
-	char p1Token; 
-	char p2Token; 
-	Tile board[8][8];
-};
-
 // matrix move directions - we can make this less global if the program is too beefy
 const pair<int,int> N (-1,0);
 const pair<int,int> NE (-1,1);
@@ -43,18 +31,6 @@ const pair<int,int> NW (-1,-1);
 #define WEST 1 << 6
 #define NORTHWEST 1 << 7
 
-
-
-//---Struct-Ops---//
-//template <typename T, typename U>
-//TODO fix warning for return type
-//addition for pair
-//pair<T,U> operator+(const pair<T,U> & l, const pair<T,U> & r){
-//	pair<T,U> output(l.first+r.first, l.second+r.second);
-//	return output;
-//}
-
-//pulled from same stackoverflow as ^
 //simple operator+ implementation for integers
 pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
 	return make_pair(x.first + y.first, x.second + y.second);
@@ -62,42 +38,37 @@ pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
 
 
 //---Creation-Functions---//
-Game newGame(void){
-	Game myGame = new GameInfo();
-	
-	myGame->turn = player1;
+Game::Game(){
+	this->turn = player1;
 	//TODO have player enter name and refer to them by it 	
 	//TODO make sure piece is not whitespace like /n or something
 	//TODO maybe have the player enter the actual ascii code for desired piece (so they can have something not on the keyboard)
 	//get desired tokens from user
 	cout << "Player 1, please choose a game token:";
-	cin.get(myGame->p1Token);
+	cin.get(this->p1Token);
 	cin.get();
 	cout << "Player 2, please choose a game token:";
-	cin.get(myGame->p2Token);
+	cin.get(this->p2Token);
 	cin.get();
 	
 
 	//initialize board
 	for (int i = 0; i < 8; i++){
 		for (int j = 0; j < 8; j++){
-			myGame->board[i][j] = new TileInfo;
-			myGame->board[i][j]->token = '-';
+			this->board[i][j] = new TileInfo;
+			this->board[i][j]->token = '-';
 		}
 	}
 
 	//set center pieces in place
-	myGame->board[3][4]->token = myGame->p1Token;
-	myGame->board[4][3]->token = myGame->p1Token;
-	myGame->board[3][3]->token = myGame->p2Token;	
-	myGame->board[4][4]->token = myGame->p2Token;
-
-	//set valid movedirs
-	return myGame;
+	this->board[3][4]->token = this->p1Token;
+	this->board[4][3]->token = this->p1Token;
+	this->board[3][3]->token = this->p2Token;	
+	this->board[4][4]->token = this->p2Token;
 }
 
 //---Access-Functions---//
-void printBoard(Game myGame){
+void Game::printBoard(){
 	char A = 'A';
 
 	//print ABC index	
@@ -111,40 +82,40 @@ void printBoard(Game myGame){
 	for(int i = 0; i < 8 ; i++){
 		cout << i << " ";
 		for (int j = 0; j < 8; j++){
-			cout << myGame->board[i][j]->token << " ";
+			cout << this->board[i][j]->token << " ";
 		}
 		cout << endl;
 	}
 	return; 
 }
 
-int getTurn(Game myGame){
-	return myGame->turn;
+int Game::getTurn(){
+	return this->turn;
 }
 
-char getOpponentToken(Game myGame){
-	if (myGame->turn == player1){
-		return myGame->p2Token;
+char Game::getOpponentToken(){
+	if (this->turn == player1){
+		return this->p2Token;
 	} else{
-		return myGame->p1Token;
+		return this->p1Token;
 	}
 }
 
 //---Manipulation-Functions---//
  
 //inserts player's move into board. Assume it has already been checked for validity
-int makeMove(Game myGame, int i, int j){
+int Game::makeMove(int i, int j){
 	if( (0 > i > 8) || (0 > j > 8)){
 		cout << "cannot make move: indexing" << endl;
 		return -1;
 	}
 
-	switch (myGame->turn){
+	switch (this->turn){
 		case player1:
-			myGame->board[i][j]->token = myGame->p1Token;
+			this->board[i][j]->token = this->p1Token;
 			break;
 		case player2:
-			myGame->board[i][j]->token = myGame->p2Token;
+			this->board[i][j]->token = this->p2Token;
 			break;
 		default:
 			cout << "cannot make move: invalid player" << endl;
@@ -155,21 +126,18 @@ int makeMove(Game myGame, int i, int j){
 }
 
 //toggles turn
-int changeTurn(Game myGame){
-	if (myGame->turn == player1){
-		myGame->turn = player2;
+int Game::changeTurn(){
+	if (this->turn == player1){
+		this->turn = player2;
 	}else{
-		myGame->turn = player1;
+		this->turn = player1;
 	}
 	return 0;
 }
 
-pair<int,int> testAddition(pair<int, int> left, pair<int, int> right){
-	return left + right;
-}
 
 //requests move from player and checks its validity
-pair<int,int> getMove(Game myGame){
+pair<int,int> Game::getMove(){
 
 	pair<char,char> charIndicies; //row,col
 	pair<int,int> intIndicies; //row, col
@@ -202,11 +170,11 @@ pair<int,int> getMove(Game myGame){
 	return intIndicies;
 }		
 
-bool validateMove(Game myGame, const pair<int,int> move){
+bool Game::validateMove(const pair<int,int> move){
 	pair<int,int> checkSpace = move;
 	
 	//check if empty
-	if (myGame->board[move.first][move.second]->token != '-'){
+	if (this->board[move.first][move.second]->token != '-'){
 		cout << "This space is not empty." << endl;
 		return false;
 	} 
@@ -214,39 +182,39 @@ bool validateMove(Game myGame, const pair<int,int> move){
 	//check surrounding spaces
 	//TODO segfault happening because we are indexing out of the matrix here. Need to check that checkSpace is in the matrix before using it to index each time can't think of a non ugly way to do it right now 
 	checkSpace = move + N;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= NORTH; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= NORTH; 
 	} 
 	checkSpace = move + NE;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= NORTHEAST; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= NORTHEAST; 
 	} 
 	checkSpace = move + E;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= EAST; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= EAST; 
 	} 
 	checkSpace = move + SE;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= SOUTHEAST; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= SOUTHEAST; 
 	} 
 	checkSpace = move + S;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= SOUTH; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= SOUTH; 
 	} 
 	checkSpace = move + SW;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= SOUTHWEST; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= SOUTHWEST; 
 	} 
 	checkSpace = move + W;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= WEST; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= WEST; 
 	} 
 	checkSpace = move + NW;
-	if(myGame->board[checkSpace.first][checkSpace.second]->token == getOpponentToken(myGame)){
-		myGame->board[move.first][move.second]->moveDirs |= NORTHWEST; 
+	if(this->board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+		this->board[move.first][move.second]->moveDirs |= NORTHWEST; 
 	} 
 
-	if(!myGame->board[move.first][move.second]->moveDirs){
+	if(!this->board[move.first][move.second]->moveDirs){
 		cout << "Please choose move adjacent to one of your opponent's tokens." << endl;
 		return false;
 	} else {
@@ -266,21 +234,21 @@ bool validateMove(Game myGame, const pair<int,int> move){
 #ifdef BOARD_TEST
 int main (int argc, char** argv) {
 	cout << "---Board-Test---" << endl;
-/*	Game myGame = newGame();
+/*	Game this = newGame();
 
-	cout << "player 1 chose: " << myGame->p1Token << endl;
-	cout << "player 2 chose: " << myGame->p2Token << endl;
+	cout << "player 1 chose: " << this->p1Token << endl;
+	cout << "player 2 chose: " << this->p2Token << endl;
 	
 	cout << "---board maybe follows" << endl;
 	
-	printBoard(myGame);
+	printBoard(this);
 
 	for (int i = 0; i < 8; i++){
 		for (int j = 0; j < 8 ; j++){
-			makeMove(player1,myGame,i,j);
+			makeMove(player1,this,i,j);
 		}
 	}
-	printBoard(myGame);
+	printBoard(this);
 */
 	return 0;
 }
