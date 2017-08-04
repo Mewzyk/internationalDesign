@@ -37,9 +37,11 @@ class Game {
 		void printBoard();
 		int getTurn();
 		char getOpponentToken();
+		bool onBoard(pair<int,int> space); //TODO make private
 		int makeMove(int i, int j);
 		int changeTurn();
 		pair<int,int> getMove();
+		bool followDirection(pair<int,int> move, const pair<int,int> dir); //TODO make private
 		bool validateMove(const pair<int,int> move);
 };
 	

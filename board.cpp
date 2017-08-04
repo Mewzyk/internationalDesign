@@ -101,6 +101,13 @@ char Game::getOpponentToken(){
 	}
 }
 
+bool Game::onBoard(pair<int,int> space){
+	if((space.first < 0) || (space.second < 0) || (space.first > 8) || (space.second > 8)){
+		return false; 
+	}
+	return true;
+	
+}
 //---Manipulation-Functions---//
  
 //inserts player's move into board. Assume it has already been checked for validity
@@ -170,6 +177,19 @@ pair<int,int> Game::getMove(){
 	return intIndicies;
 }		
 
+bool Game::followDirection(pair<int,int> move, const pair<int,int> dir){
+	move = move+dir;
+	bool retval = false;
+	if((!onBoard(move)) || (board[move.first][move.second]->token == '-')){
+		retval = false;
+	} else if (board[move.first][move.second]->token != getOpponentToken()){
+		retval =  true;
+	} else if (board[move.first][move.second]->token == getOpponentToken()){
+		followDirection(move, dir);
+	}
+	return retval;	
+}
+
 bool Game::validateMove(const pair<int,int> move){
 	pair<int,int> checkSpace = move;
 	
@@ -179,54 +199,49 @@ bool Game::validateMove(const pair<int,int> move){
 		return false;
 	} 
 
-	//check surrounding spaces
-	//TODO segfault happening because we are indexing out of the matrix here. Need to check that checkSpace is in the matrix before using it to index each time can't think of a non ugly way to do it right now 
+	//check surrounding spaces 
 	checkSpace = move + N;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,N))){
 		board[move.first][move.second]->moveDirs |= NORTH; 
+		//instead just call followDirection(checkspace,N) to see if it returns true and then set this
 	} 
 	checkSpace = move + NE;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,NE))){
 		board[move.first][move.second]->moveDirs |= NORTHEAST; 
 	} 
 	checkSpace = move + E;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,E))){
 		board[move.first][move.second]->moveDirs |= EAST; 
 	} 
 	checkSpace = move + SE;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,SE))){
 		board[move.first][move.second]->moveDirs |= SOUTHEAST; 
 	} 
 	checkSpace = move + S;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,S))){
 		board[move.first][move.second]->moveDirs |= SOUTH; 
 	} 
 	checkSpace = move + SW;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,SW))){
 		board[move.first][move.second]->moveDirs |= SOUTHWEST; 
 	} 
 	checkSpace = move + W;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,W))){
 		board[move.first][move.second]->moveDirs |= WEST; 
 	} 
 	checkSpace = move + NW;
-	if(board[checkSpace.first][checkSpace.second]->token == getOpponentToken()){
+	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,NW))){
 		board[move.first][move.second]->moveDirs |= NORTHWEST; 
 	} 
 
 	if(!board[move.first][move.second]->moveDirs){
-		cout << "Please choose move adjacent to one of your opponent's tokens." << endl;
+		cout << "Please choose move adjacent to one of your opponent's tokens, and somewhere where a flip can be made" << endl;
 		return false;
-	} else {
-		//call helper 
-	}
-
-	//recurr 
+	} 
 
 	return true;
 }	
 
-//TODO make a helper function for validateMove to follow the possible moves through to see if they have a piece on the other end of the vector and update moveDirs
 //TODO make a helper function for makeMove to flip all the pieces according to moveDirs (should look similar to the validateMove helper , but make changes)
 
 
@@ -234,22 +249,6 @@ bool Game::validateMove(const pair<int,int> move){
 #ifdef BOARD_TEST
 int main (int argc, char** argv) {
 	cout << "---Board-Test---" << endl;
-/*	Game this = newGame();
-
-	cout << "player 1 chose: " << this->p1Token << endl;
-	cout << "player 2 chose: " << this->p2Token << endl;
-	
-	cout << "---board maybe follows" << endl;
-
-	printBoard(this);
-
-	for (int i = 0; i < 8; i++){
-		for (int j = 0; j < 8 ; j++){
-			makeMove(player1,this,i,j);
-		}
-	}
-	printBoard(this);
-*/
 	return 0;
 }
 
