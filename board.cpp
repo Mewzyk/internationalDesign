@@ -2,6 +2,7 @@
  * edit 7/31 bbaltaxe
  * 	8/02 sgthomas
  *      8/03 sgthomas
+ *      8/05 bbaltaxe
  */
 
 #include <iostream>
@@ -93,6 +94,14 @@ int Game::getTurn(){
 	return turn;
 }
 
+char Game::getMyToken(){
+	if(turn == player1){
+		return p1Token;
+	} else {
+		return p2Token;
+	}
+}
+
 char Game::getOpponentToken(){
 	if (turn == player1){
 		return p2Token;
@@ -102,33 +111,65 @@ char Game::getOpponentToken(){
 }
 
 bool Game::onBoard(pair<int,int> space){
-	if((space.first < 0) || (space.second < 0) || (space.first > 8) || (space.second > 8)){
+	if((space.first < 0) || (space.second < 0) || (space.first > 7) || (space.second > 7)){
 		return false; 
 	}
 	return true;
 	
 }
+
+bool Game::isOver(){
+	if (turnCount == 60){
+		return true;
+	}else{
+		return false;
+	}
+}
+
 //---Manipulation-Functions---//
  
-//inserts player's move into board. Assume it has already been checked for validity
-int Game::makeMove(int i, int j){
-	if( (0 > i > 8) || (0 > j > 8)){
-		cout << "cannot make move: indexing" << endl;
-		return -1;
-	}
+int Game::flipTiles(pair<int,int> move, const pair<int,int> dir){
+	move = move + dir;
+	if(board[move.first][move.second]->token == getOpponentToken()){
+		board[move.first][move.second]->token = getMyToken();
+		flipTiles(move,dir);
+	} 
+	return 0;
+}
 
-	switch (turn){
-		case player1:
-			board[i][j]->token = p1Token;
-			break;
-		case player2:
-			board[i][j]->token = p2Token;
-			break;
-		default:
-			cout << "cannot make move: invalid player" << endl;
-			return -1;
-			break;
-	}		
+
+//inserts player's move into board. Assume it has already been checked for validity
+int Game::makeMove(pair<int,int> move){
+	//place piece
+	board[move.first][move.second]->token = getMyToken();
+
+	//flip pieces in all valid directions	
+	if (board[move.first][move.second]->moveDirs & NORTH){
+		flipTiles(move,N);	
+	}
+	if (board[move.first][move.second]->moveDirs & NORTHEAST){
+		flipTiles(move,NE);	
+	}
+	if (board[move.first][move.second]->moveDirs & EAST){
+		flipTiles(move,E);	
+	}
+	if (board[move.first][move.second]->moveDirs & SOUTHEAST){
+		flipTiles(move,SE);	
+	}
+	if (board[move.first][move.second]->moveDirs & SOUTH){
+		flipTiles(move,S);	
+	}
+	if (board[move.first][move.second]->moveDirs & SOUTHWEST){
+		flipTiles(move,SW);	
+	}
+	if (board[move.first][move.second]->moveDirs & WEST){
+		flipTiles(move,W);	
+	}
+	if (board[move.first][move.second]->moveDirs & NORTHWEST){
+		flipTiles(move,NW);	
+	}
+	
+	turnCount++;
 	return 0; //SUCCESS
 }
 
@@ -180,30 +221,30 @@ pair<int,int> Game::getMove(){
 bool Game::followDirection(pair<int,int> move, const pair<int,int> dir){
 	move = move+dir;
 	bool retval = false;
-	if((!onBoard(move)) || (board[move.first][move.second]->token == '-')){
+
+ 	if((!onBoard(move)) || (board[move.first][move.second]->token == '-')){
 		retval = false;
-	} else if (board[move.first][move.second]->token != getOpponentToken()){
+	} else if (board[move.first][move.second]->token == getMyToken()){
 		retval =  true;
 	} else if (board[move.first][move.second]->token == getOpponentToken()){
-		followDirection(move, dir);
+		retval = followDirection(move, dir);
 	}
 	return retval;	
 }
 
 bool Game::validateMove(const pair<int,int> move){
 	pair<int,int> checkSpace = move;
-	
+
 	//check if empty
 	if (board[move.first][move.second]->token != '-'){
 		cout << "This space is not empty." << endl;
 		return false;
 	} 
-
+	
 	//check surrounding spaces 
 	checkSpace = move + N;
 	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,N))){
-		board[move.first][move.second]->moveDirs |= NORTH; 
-		//instead just call followDirection(checkspace,N) to see if it returns true and then set this
+		board[move.first][move.second]->moveDirs |= NORTH;
 	} 
 	checkSpace = move + NE;
 	if( (onBoard(checkSpace)) && (board[checkSpace.first][checkSpace.second]->token == getOpponentToken()) && (followDirection(checkSpace,NE))){
@@ -242,8 +283,10 @@ bool Game::validateMove(const pair<int,int> move){
 	return true;
 }	
 
-//TODO make a helper function for makeMove to flip all the pieces according to moveDirs (should look similar to the validateMove helper , but make changes)
-
+//TODO make a function for no possible moves
+//TODO make a function to check if there is a winner
+//TODO make return values (success, error, etc.) consistent 
+//TODO make a function to determine the winne and the score
 
 //---File-Test-Harness---//
 #ifdef BOARD_TEST

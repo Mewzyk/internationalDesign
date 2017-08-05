@@ -10,13 +10,17 @@ int main (int argc, char** argv) {
 	cout << "---Welcome to Othello---" << endl << endl;
 	Game myGame;
 	bool valid = false;
+	bool inGame = true;
+	pair<int,int> newMove;
+
 	
-	while(1){	
+	while(inGame){	
 		//print current info
 		myGame.printBoard();
 		cout << "Player"<< myGame.getTurn() + 1 <<"'s turn" << endl;
-	
-		pair<int,int> newMove;	
+
+		//wait for valid move input
+		valid = false;
 		while(!valid){
 			//get desired move
 			newMove = myGame.getMove();
@@ -28,9 +32,13 @@ int main (int argc, char** argv) {
 		}
 
 		//make move
-		myGame.makeMove(newMove.first, newMove.second);
+		myGame.makeMove(newMove);
 		myGame.changeTurn();
-		valid = false;
+		
+		//check game state
+		if(myGame.isOver()){
+			inGame = false;
+		}
 	}
 
 	return 0;
