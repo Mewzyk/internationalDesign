@@ -11,23 +11,29 @@
 
 using namespace std;
 
-//#define BOARD_TEST
+
+//Errors
+#define SUCCESS 0
+#define ISLAND_ERROR -1
+#define OFF_BOARD_ERROR -2
+#define OCCUPIED_ERROR -3
 
 
 enum {
+	tie,
 	player1,
 	player2
 };
 
 
-struct TileInfo{ //TODO make private
+struct TileInfo{ 
         int moveDirs;
         char token;
 };
 
 typedef struct TileInfo * Tile;
 
-class Game { //TODO can we make all members of the class private too? 
+class Game { 
 	int turn;
 	char p1Token;
 	char p2Token;
@@ -37,17 +43,19 @@ class Game { //TODO can we make all members of the class private too?
 	public:
 		Game();
 		void printBoard();
-		int getTurn();
-		char getMyToken();
+		int getTurn(); 
+		char getMyToken(); 
 		char getOpponentToken();
 		bool isOver();
-		bool onBoard(pair<int,int> space); //TODO make private
-		int flipTiles(pair<int,int> move, pair<int,int> dir); //TODO make private
+		bool onBoard(pair<int,int> space); 
+		bool movesRemain();
+		int getWinner();
+		int flipTiles(pair<int,int> move, pair<int,int> dir); 
 		int makeMove(pair<int,int> move);
 		int changeTurn();
 		pair<int,int> getMove();
-		bool followDirection(pair<int,int> move, const pair<int,int> dir); //TODO make private
-		bool validateMove(const pair<int,int> move);
+		bool followDirection(pair<int,int> move, const pair<int,int> dir); 
+		int validateMove(const pair<int,int> move);
 };
 	
 #endif // BOARD_H

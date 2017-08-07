@@ -3,6 +3,7 @@
  * 	8/02 sgthomas
  *      8/03 sgthomas
  *      8/05 bbaltaxe
+ *      8/07 bbaltaxe
  */
 
 #include <iostream>
@@ -33,7 +34,6 @@ const pair<int,int> NW (-1,-1);
 #define SOUTHWEST 1 << 5
 #define WEST 1 << 6
 #define NORTHWEST 1 << 7
-
 //simple operator+ implementation for integers
 pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
 	return make_pair(x.first + y.first, x.second + y.second);
@@ -126,6 +126,37 @@ bool Game::isOver(){
 	}
 }
 
+bool Game::movesRemain(){
+	for(int i = 0; i < 8 ; i++){
+		for (int j = 0; j < 8; j++){
+			if (validateMove(make_pair(i,j)) == SUCCESS){
+				return true; //find first valid move and return
+			}	
+		}
+	}
+	return false;
+}
+
+int Game::getWinner(){
+	int p1 = 0, p2 = 0;
+	for(int i = 0; i < 8 ; i++){
+		for (int j = 0; j < 8; j++){
+			if(board[i][j]->token == p1Token){
+				p1++;
+			} else if (board[i][j]->token == p2Token){
+				p2++;
+			}
+		}
+	}
+	
+	if (p1>p2){ 
+		return player1; 
+	} else if (p2>p1){ 
+		return player2; 
+	} else { 
+		return tie; 
+	}
+}
 //---Manipulation-Functions---//
  
 int Game::flipTiles(pair<int,int> move, const pair<int,int> dir){
@@ -134,7 +165,7 @@ int Game::flipTiles(pair<int,int> move, const pair<int,int> dir){
 		board[move.first][move.second]->token = getMyToken();
 		flipTiles(move,dir);
 	} 
-	return 0;
+	return SUCCESS;
 }
 
 
@@ -170,7 +201,7 @@ int Game::makeMove(pair<int,int> move){
 	}
 	
 	turnCount++;
-	return 0; //SUCCESS
+	return SUCCESS;
 }
 
 //toggles turn
@@ -180,7 +211,7 @@ int Game::changeTurn(){
 	}else{
 		turn = player1;
 	}
-	return 0;
+	return SUCCESS;
 }
 
 
@@ -207,7 +238,9 @@ pair<int,int> Game::getMove(){
 		    ('A' <= charIndicies.second) && (charIndicies.second <= 'H')){
 			Valid = true;
 		} else {
-			cout << "Your desired move is not on the board. Please try again." << endl;
+			cout << "\nYour desired move is not on the board. Please press 'Enter' to try again." << endl;
+			cin.clear();
+			cin.ignore(1000,'\n');
 		}
 
 	}
@@ -232,13 +265,12 @@ bool Game::followDirection(pair<int,int> move, const pair<int,int> dir){
 	return retval;	
 }
 
-bool Game::validateMove(const pair<int,int> move){
+int Game::validateMove(const pair<int,int> move){
 	pair<int,int> checkSpace = move;
 
 	//check if empty
 	if (board[move.first][move.second]->token != '-'){
-		cout << "This space is not empty." << endl;
-		return false;
+		return OCCUPIED_ERROR;
 	} 
 	
 	//check surrounding spaces 
@@ -276,11 +308,10 @@ bool Game::validateMove(const pair<int,int> move){
 	} 
 
 	if(!board[move.first][move.second]->moveDirs){
-		cout << "Please choose move adjacent to one of your opponent's tokens, and somewhere where a flip can be made" << endl;
-		return false;
+		return ISLAND_ERROR;
 	} 
 
-	return true;
+	return SUCCESS;
 }	
 
 //TODO make a function for no possible moves
@@ -292,7 +323,7 @@ bool Game::validateMove(const pair<int,int> move){
 #ifdef BOARD_TEST
 int main (int argc, char** argv) {
 	cout << "---Board-Test---" << endl;
-	return 0;
+	return SUCCESS;
 }
 
 #endif //BOARD_TEST
