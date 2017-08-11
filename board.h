@@ -7,8 +7,9 @@
  */
 #ifndef BOARD_H
 #define BOARD_H
+#include "json.hpp"
 
-
+using json = nlohmann::json;
 using namespace std;
 
 
@@ -20,7 +21,7 @@ using namespace std;
 
 
 enum {
-	tie,
+	tieFighter,
 	player1,
 	player2
 };
@@ -34,6 +35,8 @@ struct TileInfo{
 typedef struct TileInfo * Tile;
 
 class Game { 
+	json data;
+
 	int turn;
 	char p1Token;
 	char p2Token;
@@ -56,6 +59,7 @@ class Game {
 		pair<int,int> getMove();
 		bool followDirection(pair<int,int> move, const pair<int,int> dir); 
 		int validateMove(const pair<int,int> move);
+		string toJSON();
 };
 	
 #endif // BOARD_H

@@ -11,6 +11,7 @@ int main (int argc, char** argv) {
 	cout << "---Welcome to Othello---" << endl << endl;
 	
 	int mode = parseCL(argc,argv);
+		
 	
 	switch(mode){
 		case CL_ERROR:
@@ -29,6 +30,7 @@ int main (int argc, char** argv) {
 	bool inGame = true;
 	pair<int,int> newMove;
 	
+	cout << endl <<  myGame.toJSON() << endl;	
 
 /*
 	while(inGame){	
