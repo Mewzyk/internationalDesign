@@ -8,6 +8,7 @@
 #include <iostream>
 #include <getopt.h>
 #include "util.h"
+#include <cstdio>
 
 using namespace std;
 

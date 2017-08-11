@@ -14,6 +14,7 @@
 
 using namespace std;
 
+
 //#define BOARD_TEST
 
 // matrix move directions - we can make this less global if the program is too beefy
@@ -40,17 +41,26 @@ pair<int, int> operator+(const pair<int, int> & x, const pair<int, int> & y){
 }
 
 //---Creation-Functions---//
+//Default constructor for class Game
+//Creates a new game
+//Use other constructor to create a game object from a json string
 Game::Game(){
 	turn = player1;
+	data["turn"] = player1;
+	data["turnCount"] = 0;
 	//TODO have player enter name and refer to them by it 	
 	//TODO make sure piece is not whitespace like /n or something
 	//TODO maybe have the player enter the actual ascii code for desired piece (so they can have something not on the keyboard)
 	//get desired tokens from user
 	cout << "Player 1, please choose a game token:";
 	cin.get(p1Token);
+	data["p1Token"] = p1Token;
+
 	cin.get();
 	cout << "Player 2, please choose a game token:";
 	cin.get(p2Token);
+	data["p2Token"] = p2Token;
+
 	cin.get();
 	
 	//initialize board
@@ -58,6 +68,8 @@ Game::Game(){
 		for (int j = 0; j < 8; j++){
 			this->board[i][j] = new TileInfo;
 			this->board[i][j]->token = '-';
+
+			data["board"]["" + i]["" + j] = {{"token", "-"}, {"moveDirs", 0}};
 		}
 	}
 
@@ -66,7 +78,13 @@ Game::Game(){
 	board[4][3]->token = p1Token;
 	board[3][3]->token = p2Token;	
 	board[4][4]->token = p2Token;
+	 	
 }
+
+/**
+Game::Game(json& input){
+}
+*/
 
 //---Access-Functions---//
 void Game::printBoard(){
@@ -154,7 +172,7 @@ int Game::getWinner(){
 	} else if (p2>p1){ 
 		return player2; 
 	} else { 
-		return tie; 
+		return tieFighter; 
 	}
 }
 //---Manipulation-Functions---//
@@ -312,6 +330,10 @@ int Game::validateMove(const pair<int,int> move){
 	} 
 
 	return SUCCESS;
+}
+
+string Game::toJSON(){
+	return data.dump();
 }	
 
 //TODO make a function for no possible moves
