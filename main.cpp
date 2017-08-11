@@ -10,11 +10,25 @@ using namespace std;
 int main (int argc, char** argv) {
 	cout << "---Welcome to Othello---" << endl << endl;
 	
+	int mode = parseCL(argc,argv);
+	
+	switch(mode){
+		case CL_ERROR:
+			break;
+		case CL_NEWGAME:
+			cout << "---Starting New Game---" << endl;
+			break;
+			/*need to mess with game declaration so that we can either start a new one or set the old one to a file here. 
+			 * I guess always start with a game pointer, and set it accordingly. */
+		default:
+			break;
+	}
+
 	Game myGame;
 	bool valid = false;
 	bool inGame = true;
 	pair<int,int> newMove;
-
+	
 
 /*
 	while(inGame){	
