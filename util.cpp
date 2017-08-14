@@ -15,6 +15,13 @@ using namespace std;
 
 //static int verboseFlag;
 
+int printHelp(void){
+	cout << "Need Help? Here are the available options:" << endl 
+		<< "-h	--help		prints available options and useful information." << endl
+		<< "-n	--new-game	begins new game." << endl;
+		       	
+	return 0;
+}
 //parseCL
 int parseCL(int argc, char** argv){
 	int c; 
@@ -47,10 +54,9 @@ int parseCL(int argc, char** argv){
 				printf("\n");
 				break;	  
 			case 'h':
-				cout << "Need Help? Here are the available options:" << endl 
-					<< "-h	--help		prints available options and useful information." << endl
-					<< "-n	--new-game	begins new game." << endl;
-			       			       
+				cout << "To start a new game:" << endl << "game -n" << endl 
+					<< "To make a move:" << endl << "game -m A1  (Where A1 is your move)" << endl; 
+				printHelp();       			       
 				break;
 
 		        case 'n':
@@ -83,9 +89,8 @@ int parseCL(int argc, char** argv){
 		putchar ('\n');
 	}
 	if (argc == 1){
-		cout << "Please enter a command" << endl;
-		cout << "Oops! Need help? Use the -h or --help option for more info" << endl;	
-		returnVal = CL_ERROR;
+		printHelp();
 	}
 	return returnVal;
 }
+

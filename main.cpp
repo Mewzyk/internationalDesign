@@ -30,7 +30,7 @@ int main (int argc, char** argv) {
 	bool inGame = true;
 	pair<int,int> newMove;
 	
-	cout << endl <<  myGame.toJSON() << endl;	
+//	cout << endl <<  myGame.toJSON() << endl;	
 
 /*
 	while(inGame){	
